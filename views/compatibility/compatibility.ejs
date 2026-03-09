@@ -1,0 +1,69 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="main-wrapper">
+    <div class="grid-container">
+        <div class="column">
+            <h2 class="section-title donate-red"><span class="arrow-icon">&rarr;</span> Who Can Donate To Whom</h2>
+            <% const donateList = [
+                { type: 'A+', to: ['A+', 'AB+'] },
+                { type: 'A-', to: ['A+', 'A-', 'AB+', 'AB-'] },
+                { type: 'B+', to: ['B+', 'AB+'] },
+                { type: 'B-', to: ['B+', 'B-', 'AB+', 'AB-'] },
+                { type: 'AB+', to: ['AB+'] },
+                { type: 'AB-', to: ['AB+', 'AB-'] },
+                { type: 'O+', to: ['O+', 'A+', 'B+', 'AB+'] },
+                { type: 'O-', to: ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'] }
+            ]; %>
+            <% donateList.forEach(item => { %>
+                <div class="list-row">
+                    <div class="badge primary-bg"><%= item.type %></div>
+                    <span class="muted-arrow">&rarr;</span>
+                    <div class="badge-group">
+                        <% item.to.forEach(target => { %>
+                            <span class="badge secondary-blue"><%= target %></span>
+                        <% }) %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+
+        <div class="column">
+            <h2 class="section-title receive-blue"><span class="arrow-icon">&rarr;</span> Who Can Receive From Whom</h2>
+            <% const receiveList = [
+                { type: 'A+', from: ['A+', 'A-', 'O+', 'O-'] },
+                { type: 'A-', from: ['A-', 'O-'] },
+                { type: 'B+', from: ['B+', 'B-', 'O+', 'O-'] },
+                { type: 'B-', from: ['B-', 'O-'] },
+                { type: 'AB+', from: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] },
+                { type: 'AB-', from: ['A-', 'B-', 'AB-', 'O-'] },
+                { type: 'O+', from: ['O+', 'O-'] },
+                { type: 'O-', from: ['O-'] }
+            ]; %>
+            <% receiveList.forEach(item => { %>
+                <div class="list-row">
+                    <div class="badge accent-blue-bg"><%= item.type %></div>
+                    <span class="muted-arrow">&rarr;</span>
+                    <div class="badge-group">
+                        <% item.from.forEach(source => { %>
+                            <span class="badge secondary-red"><%= source %></span>
+                        <% }) %>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <div class="universal-footer">
+        <div class="u-card u-donor">
+            <div class="u-header">🩸 Universal Donor</div>
+            <div class="u-type">Blood Type: <strong>O-</strong></div>
+            <div class="u-desc">Can donate to all blood types</div>
+        </div>
+        <div class="u-card u-recipient">
+            <div class="u-header">💉 Universal Recipient</div>
+            <div class="u-type">Blood Type: <strong>AB+</strong></div>
+            <div class="u-desc">Can receive from all blood types</div>
+        </div>
+    </div>
+</div>
+

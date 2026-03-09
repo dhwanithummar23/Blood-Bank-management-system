@@ -1,0 +1,76 @@
+<% layout("/layouts/boilerplate") %>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><%= bank.name %> - Urgent Requests</h2>
+    <a href="/bloodbank/dashboard" class="btn btn-outline-danger">Back to Dashboard</a>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3 mb-2">
+      <div class="card text-bg-light">
+        <div class="card-body">
+          <h6 class="card-title">Total Urgent</h6>
+          <h3><%= urgentStats.total %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-2">
+      <div class="card text-bg-warning">
+        <div class="card-body">
+          <h6 class="card-title">Pending</h6>
+          <h3><%= urgentStats.pending %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-2">
+      <div class="card text-bg-success">
+        <div class="card-body">
+          <h6 class="card-title">Accepted</h6>
+          <h3><%= urgentStats.accepted %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-2">
+      <div class="card text-bg-secondary">
+        <div class="card-body">
+          <h6 class="card-title">Rejected</h6>
+          <h3><%= urgentStats.rejected %></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if (urgentRequests.length === 0) { %>
+    <p>No urgent hospital requests yet.</p>
+  <% } else { %>
+    <% urgentRequests.forEach((item) => { %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="mb-1"><%= item.hospital ? item.hospital.name : "Unknown hospital" %></h5>
+              <p class="mb-1">Blood Group: <strong><%= item.bloodGroup %></strong></p>
+              <p class="mb-1">Units Needed: <strong><%= item.units %></strong></p>
+              <p class="mb-1">Note: <%= item.note || "N/A" %></p>
+              <p class="mb-0">Requested on: <%= item.createdAt.toDateString() %></p>
+            </div>
+            <span class="badge text-bg-<%= item.status === 'Accepted' ? 'success' : (item.status === 'Rejected' ? 'secondary' : 'warning') %>">
+              <%= item.status %>
+            </span>
+          </div>
+
+          <% if (item.status === "Pending") { %>
+            <div class="mt-3 d-flex gap-2">
+              <form method="POST" action="/bloodbank/urgent-requests/<%= item._id %>/accept?_method=PUT">
+                <button class="btn btn-success btn-sm">Accept</button>
+              </form>
+              <form method="POST" action="/bloodbank/urgent-requests/<%= item._id %>/reject?_method=PUT">
+                <button class="btn btn-outline-secondary btn-sm">Reject</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>

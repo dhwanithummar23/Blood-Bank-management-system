@@ -1,0 +1,57 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container">
+    <header class="header-section">
+        <div class="icon-box">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <h2>Donor Eligibility Checker</h2>
+        <p>Answer these basic health questions to check if you're eligible to donate blood</p>
+    </header>
+
+    <div id="eligibilityResult" class="result-box" style="display: none;">
+        <div class="result-content">
+            <h3 id="resultTitle"></h3>
+            <p id="resultText"></p>
+            <button type="button" class="btn-reset" onclick="window.location.reload()">Check Again</button>
+        </div>
+    </div>
+
+    <form id="eligibilityForm">
+        <% 
+        const questions = [
+            { id: 1, q: "Are you between 18-65 years of age?" },
+            { id: 2, q: "Is your weight more than 45 kg?" },
+            { id: 3, q: "Have you donated blood in the last 3 months?" },
+            { id: 4, q: "Have you had any illness or infection in the last 2 weeks?" },
+            { id: 5, q: "Are you currently taking antibiotics or any major medication?" },
+            { id: 6, q: "Have you had any surgery in the last 6 months?" },
+            { id: 7, q: "Have you got a tattoo or piercing in the last 6 months?" },
+            { id: 8, q: "Are you pregnant or breastfeeding?" },
+            { id: 9, q: "Have you consumed alcohol in the last 24 hours?" },
+            { id: 10, q: "Do you have any chronic diseases (Diabetes, Heart disease, etc.)?" }
+        ];
+        %>
+
+        <% questions.forEach(item => { %>
+            <div class="question-card" id="card-<%= item.id %>">
+                <div class="q-header">
+                    <span class="q-number"><%= item.id %></span>
+                    <p><%= item.q %></p>
+                </div>
+                <div class="btn-group">
+                    <input type="radio" name="q<%= item.id %>" value="Yes" id="q<%= item.id %>y" required>
+                    <label for="q<%= item.id %>y">Yes</label>
+
+                    <input type="radio" name="q<%= item.id %>" value="No" id="q<%= item.id %>n">
+                    <label for="q<%= item.id %>n">No</label>
+                </div>
+            </div>
+        <% }); %>
+
+        <button type="submit" id="submitBtn" class="submit-btn" disabled>
+            Submit
+        </button>
+    </form>
+</div>
+<script src="/js/logic.js"></script>

@@ -1,0 +1,158 @@
+<% layout("/layouts/boilerplate") %>
+<% const role = selectedRole === "donee" ? "donee" : "donor"; %>
+
+<style>
+  body {
+    background-color: #f4f4f4;
+  }
+
+  .login-container {
+    width: 420px;
+    margin: 80px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .heart-icon {
+    background: #ffe6ea;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: crimson;
+  }
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  .form-group {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: crimson;
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: crimson;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .login-btn:hover {
+    background-color: darkred;
+  }
+
+  .register-text {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+
+  .register-text a {
+    color: crimson;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .role-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .role-link {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #444;
+    font-weight: 600;
+  }
+
+  .role-link.active {
+    border-color: crimson;
+    color: crimson;
+    background: #fff1f3;
+  }
+</style>
+
+<div class="login-container">
+  <div class="heart-icon">❤️</div>
+
+  <h2>User Login</h2>
+  <div class="subtitle">Choose login type and continue</div>
+
+  <div class="role-switch">
+    <a href="/login/user?role=donor" class="role-link <%= role === 'donor' ? 'active' : '' %>">Donor Login</a>
+    <a href="/login/user?role=donee" class="role-link <%= role === 'donee' ? 'active' : '' %>">Donee Login</a>
+  </div>
+
+  <form action="/login/user" method="POST">
+    <input type="hidden" name="role" value="<%= role %>" />
+    <div class="form-group">
+      <label>USERNAME</label>
+      <input
+        type="text"
+        name="username"
+        placeholder="Enter username"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>PASSWORD</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="Enter password"
+        required
+      />
+    </div>
+
+    <button type="submit" class="login-btn">
+      <%= role === "donee" ? "Login as Donee" : "Login as Donor" %>
+    </button>
+  </form>
+
+  <div class="register-text">
+    Don't have an account?
+    <a href="<%= role === 'donee' ? '/register/donee' : '/register/user' %>">Register here</a>
+  </div>
+</div>

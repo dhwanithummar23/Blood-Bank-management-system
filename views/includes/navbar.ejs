@@ -1,0 +1,103 @@
+<nav class="main-navbar">
+  <div class="nav-content">
+    <a href="/listings" class="nav-logo"><i class="fa-solid fa-droplet"></i></a>
+    <div class="nav-text-stack">
+      <div class="nav-inner">LifeLink Blood Bank</div>
+      <div class="nav-subinner">Real-Time Blood Management System</div>
+    </div>
+  </div>
+
+  <div class="nav-btn">
+    <% if (currentUser) { %>
+      <form method="GET" action="/user/dashboard">
+        <button class="register-btn">
+          <i class="fa-solid fa-chart-line"></i>
+          <%= (currentUser.role || "donor") === "donee" ? "Donee Dashboard" : "Donor Dashboard" %>
+        </button>
+      </form>
+      <form method="GET" action="/logout/user">
+        <button class="register-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout User
+        </button>
+      </form>
+    <% } else if (isBloodBankLoggedIn) { %>
+      <form method="GET" action="/bloodbank/dashboard">
+        <button class="register-btn">
+          <i class="fa-solid fa-hospital"></i> Bank Dashboard
+        </button>
+      </form>
+      <form method="POST" action="/logout/bloodbank">
+        <button class="register-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout Bank
+        </button>
+      </form>
+    <% } else if (isHospitalLoggedIn) { %>
+      <form method="GET" action="/hospital/dashboard">
+        <button class="register-btn">
+          <i class="fa-solid fa-truck-medical"></i> Hospital Dashboard
+        </button>
+      </form>
+      <form method="POST" action="/logout/hospital">
+        <button class="register-btn">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout Hospital
+        </button>
+      </form>
+    <% } else { %>
+      <form method="GET" action="/login/user">
+        <button class="register-btn">
+          <i class="fa-solid fa-user"></i> User Login
+        </button>
+      </form>
+      <form method="GET" action="/login/bloodbank">
+        <button class="register-btn">
+          <i class="fa-solid fa-building"></i> Bank Login
+        </button>
+      </form>
+      <form method="GET" action="/login/hospital">
+        <button class="register-btn">
+          <i class="fa-solid fa-truck-medical"></i> Hospital Login
+        </button>
+      </form>
+      <form method="GET" action="/register">
+        <button class="register-btn">
+          <i class="fa-solid fa-shield"></i> Register
+        </button>
+      </form>
+    <% } %>
+  </div>
+</nav>
+
+<nav class="sticky-nav">
+  <div class="nav-container">
+    <a href="/listings" class="nav-item">
+      <i class="bi bi-geo-alt-fill"></i> Nearby Stock
+    </a>
+
+    <a href="/compatibility" class="nav-item">
+      <i class="bi bi-activity"></i> Compatibility
+    </a>
+
+    <a href="/eligibility" class="nav-item">
+      <i class="bi bi-people"></i> Eligibility Check
+    </a>
+
+    <!-- <a href="/usage" class="nav-item">
+      <i class="bi bi-pulse"></i> Usage Stats
+    </a>
+
+    <a href="/urgentreq" class="nav-item">
+      <i class="bi bi-bell"></i> Urgent Requests
+      <span class="badge-count">3</span>
+    </a> -->
+
+    <% if (isBloodBankLoggedIn) { %>
+      <a href="/bloodbank/urgent-requests" class="nav-item">
+        <i class="bi bi-bell"></i> Urgent Request
+      </a>
+    <% } %>
+
+    <a href="<%= currentUser ? '/user/dashboard' : (isBloodBankLoggedIn ? '/bloodbank/dashboard' : (isHospitalLoggedIn ? '/hospital/dashboard' : '/login/user')) %>" class="nav-item">
+      <i class="bi bi-bookmark"></i> My Dashboard
+    </a>
+  </div>
+</nav>

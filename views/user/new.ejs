@@ -1,0 +1,114 @@
+<% layout("/layouts/boilerplate") %>
+<% const userRole = role === "donee" ? "donee" : "donor"; %>
+
+<div class="form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h3><%= userRole === "donee" ? "Donee Registration" : "Donor Registration" %></h3>
+      <p>
+        <%= userRole === "donee"
+          ? "Register to request blood from nearby blood banks"
+          : "Help save lives by joining our donor network" %>
+      </p>
+    </div>
+
+    <form action="/register/user" method="POST" class="registration-form">
+      <input type="hidden" name="role" value="<%= userRole %>" />
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Choose a unique username"
+          required
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Create a strong password"
+          required
+        />
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="age">Age</label>
+          <input
+            type="number"
+            name="age"
+            id="age"
+            min="18"
+            placeholder="18+"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="weight">Weight (kg)</label>
+          <input
+            type="number"
+            name="weight"
+            id="weight"
+            placeholder="e.g. 65"
+            <%= userRole === "donor" ? "required" : "" %>
+          />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="bloodGroup">Blood Group</label>
+        <select name="bloodGroup" id="bloodGroup" required>
+          <option value="" disabled selected>Select your group</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="location">City / Location</label>
+        <input
+          type="text"
+          name="location"
+          id="location"
+          placeholder="e.g. Ahmedabad"
+          required
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="diseases">
+          <%= userRole === "donor" ? "Medical History (Optional)" : "Medical Notes (Optional)" %>
+        </label>
+        <input
+          type="text"
+          name="diseases"
+          id="diseases"
+          placeholder="Comma separated (e.g. Diabetes, Asthma)"
+        />
+        <small class="helper-text">Leave blank if none.</small>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <%= userRole === "donee" ? "Register as Donee" : "Register as Donor" %>
+      </button>
+
+      <div class="form-footer">
+        <p>
+          Already have an account?
+          <a href="/login/user?role=<%= userRole %>">Login here</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

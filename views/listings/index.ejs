@@ -1,0 +1,100 @@
+<% layout("/layouts/boilerplate") %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="listings-container">
+  <div class="search-container" style="margin-bottom: 30px;">
+    <form action="/listings" method="GET" class="search-form" style="display: flex; gap: 10px;">
+      <input 
+        type="text" 
+        name="search" 
+        placeholder="Search by address (e.g. Downtown, Mumbai...)" 
+        class="form-control"
+        value="<%= typeof search !== 'undefined' ? search : '' %>"
+        style="flex-grow: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; width:500px"
+      >
+      <button type="submit" class="btn-show" style="padding: 10px 20px;">Search</button>
+      <a href="/listings" class="btn-edit" style="text-decoration: none; padding: 10px 20px; text-align: center;">Reset</a>
+    </form>
+  </div>
+
+  <h3 style="width: 100%; margin-bottom: 20px;">
+    <% if(typeof search !== 'undefined' && search) { %>
+      Search results for "<%= search %>"
+    <% } else { %>
+      All Blood Centers
+    <% } %>
+  </h3>
+  
+  <% if(allListings.length > 0) { %>
+    <% for(let listing of allListings) { %>
+      <div class="blood-card">
+        <div class="card-header">
+          <div class="header-main" style="display: flex; justify-content: space-between; align-items: center;">
+            <h2><%= listing.name %></h2>
+            <!-- <div class="status-badge">
+              <% if (listing.isOpen) { %>
+                <span class="badge-open" style="color: green; font-weight: bold;">● Open</span>
+              <% } else { %>
+                <span class="badge-closed" style="color: red; font-weight: bold;">● Closed</span>
+              <% } %>
+            </div> -->
+          </div>
+          <p class="hospital-type"><%= listing.type %></p>
+        </div>
+
+        <div class="card-body">
+          <p><i class="fas fa-map-marker-alt"></i> <%= listing.address %> 
+             <!-- <span class="dist">(<%= listing.distance_km %> km)</span> -->
+          </p>
+          <p><i class="fas fa-phone"></i> <%= listing.phone %></p>
+          <p><i class="fas fa-clock"></i> <%= listing.timing %></p>
+
+          <hr>
+          <p class="stock-title">Available Blood Stock:</p>
+          
+          <div class="blood-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+            <% if(listing.available_blood_stock) { %>
+              <% for(let [type, units] of Object.entries(listing.available_blood_stock)) { %>
+                <div class="blood-item <%= units < 5 ? 'low-stock' : '' %>" style="border: 1px solid #ddd; padding: 5px; text-align: center;">
+                  <span class="blood-type" style="display: block; font-weight: bold;"><%= type %></span>
+                  <span class="unit-count"><%= units %></span>
+                  <small class="unit-label">units</small>
+                </div>
+              <% } %>
+            <% } %>
+          </div>
+
+          <div class="button-group" style="margin-top: 20px; display: flex; gap: 10px;">
+            <a href="/listings/<%= listing._id %>" class="btn-show" style="text-decoration: none;">Show Detail</a>
+
+            <% if (isBloodBankLoggedIn && currentBloodbankId && currentBloodbankId.toString() === listing._id.toString()) { %>
+              <a href="/listings/<%= listing._id %>/edit" class="btn-edit" style="text-decoration: none;">Edit Detail</a>
+            <% } %>
+
+            <% if (isUserLoggedIn) { %>
+              <% const role = (currentUser && currentUser.role) ? currentUser.role : 'donor'; %>
+              <% if (role === 'donee') { %>
+                <form action="/request-blood/<%= listing._id %>" method="POST">
+                  <button type="submit" class="btn-donate">Request Blood</button>
+                </form>
+              <% } else { %>
+                <form action="/donate/<%= listing._id %>" method="POST">
+                  <button type="submit" class="btn-donate">Apply Donation</button>
+                </form>
+              <% } %>
+            <% } else if (isHospitalLoggedIn) { %>
+              <a href="/hospital/dashboard?bankId=<%= listing._id %>" class="btn-donate" style="text-decoration: none;">Send Urgent Request</a>
+            <% } else if (!isBloodBankLoggedIn) { %>
+              <a href="/login/user" class="btn-donate" style="text-decoration: none;">Login to Apply</a>
+            <% } %>
+
+          </div>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div style="width: 100%; text-align: center; padding: 50px;">
+      <p>No results found for that location. Please try a different search term.</p>
+    </div>
+  <% } %>
+</div>

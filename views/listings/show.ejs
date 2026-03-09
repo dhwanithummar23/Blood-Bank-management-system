@@ -1,0 +1,54 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="show-container">
+  <div class="detail-card">
+    <div class="detail-header">
+      <h2><%= listing.name %></h2>
+      <span id="status-badge" 
+      class="status-badge" 
+      data-timing="<%= listing.timing %>">
+  <%= listing.isOpen ? "Open" : "Closed" %>
+</span>
+    </div>
+    
+    <div class="detail-body">
+      <div class="info-section">
+        <p><i class="fas fa-hospital"></i> <strong>Type:</strong> <%= listing.type %></p>
+        <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> <%= listing.address %></p>
+        <p><i class="fas fa-route"></i> <strong>Distance:</strong> <%= listing.distance_km %> km</p>
+        <p><i class="fas fa-phone"></i> <strong>Contact:</strong> <%= listing.phone %></p>
+        <p><i class="fas fa-clock"></i> <strong>Timing:</strong> <%= listing.timing %></p>
+      </div>
+
+      <hr class="form-divider">
+
+      <h3>Available Blood Stock</h3>
+      <% const stock = listing.available_blood_stock || {}; %>
+      <div class="blood-grid">
+        <% if (Object.keys(stock).length === 0) { %>
+          <p>Stock details are not available for this blood bank.</p>
+        <% } else { %>
+          <% for (let [group, units] of Object.entries(stock)) { %>
+            <div class="blood-item <%= units < 5 ? 'low-stock' : '' %>">
+              <span class="blood-type text-bold"><%= group %></span>
+              <span class="unit-count"><%= units %></span>
+              <span class="unit-label">units</span>
+            </div>
+          <% } %>
+        <% } %>
+      </div>
+
+      <% if (isBloodBankLoggedIn && currentBloodbankId && currentBloodbankId.toString() === listing._id.toString()) { %>
+        <div class="show-actions">
+          <a href="/listings/<%= listing._id %>/edit" class="btn-edit-link">Edit Details</a>
+          
+          <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" onsubmit="return confirm('Are you sure you want to delete this blood bank?')">
+            <button class="btn-delete">Delete Blood Bank</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script src="/js/badge.js"></script>

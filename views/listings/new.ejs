@@ -1,0 +1,70 @@
+<% layout("/layouts/boilerplate") %>
+<div class="form-container">
+  <div class="form-card">
+    <h3>Register Your Blood Bank</h3>
+    <form method="POST" action="/register/bloodbank" class="registration-form needs-validation" novalidate>
+      
+      <div class="input-group">
+        <label>Blood Bank Name</label>
+        <input name="listing[name]" placeholder="e.g. City Central Blood Bank" type="text" required />
+        <div class="valid-feedback">Looks Good!</div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Facility Type</label>
+          <select name="listing[type]" required>
+            <option value="Government Hospital">Government Hospital</option>
+            <option value="Private Hospital">Private Hospital</option>
+            <option value="Blood Bank">Blood Bank</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Contact Number</label>
+          <input name="listing[phone]" placeholder="+91 0000000000" type="text" required />
+          <div class="invalid-feedback">Number should be valid!</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Address</label>
+        <textarea name="listing[address]" placeholder="Full street address..." rows="3" required></textarea>
+        <div class="invalid-feedback">Please enter Blood-bank address!</div>
+      </div>
+
+      <div class="input-group">
+        <label>Operating Hours / Timing</label>
+        <input name="listing[timing]" placeholder="e.g. 24x7 or 9 AM - 8 PM" type="text" required />
+        <div class="invalid-feedback">Please enter blood-bank timing!</div>
+      </div>
+
+      <hr class="form-divider">
+      
+      <label class="stock-label">Initial Blood Stock (Units)</label>
+      <div class="blood-stock-grid">
+        <% const types = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %>
+        <% types.forEach(type => { %>
+          <div class="stock-input">
+            <span><%= type %></span>
+            <input name="listing[available_blood_stock][<%= type %>]" type="number" placeholder="0" min="0" />
+          </div>
+        <% }) %>
+      </div>
+      <hr>
+      <h3>Account Details</h3>
+
+      <label>Username</label>
+      <input type="text" name="username" required>
+
+      <label>Password</label>
+      <input type="password" name="password" required>
+
+      <p>Already have an account?</p>
+      <a href="/login/bloodbank">Login here</a>
+
+
+      <button class="btn-submit">Add Blood Bank</button>
+    </form>
+  </div>
+</div>
+<script src="/js/script.js"></script>

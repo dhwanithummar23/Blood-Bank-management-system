@@ -1,0 +1,71 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="form-container">
+  <div class="form-card">
+    <h3>Edit Blood Bank Details</h3>
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="registration-form needs-validation" novalidate>
+      
+      <div class="input-group">
+        <label>Blood Bank Name</label>
+        <input name="listing[name]" value="<%= listing.name %>" type="text" required />
+        <div class="valid-feedback">Looks Good!</div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Facility Type</label>
+          <select name="listing[type]" required>
+            <option value="Government Hospital" <%= listing.type === 'Government Hospital' ? 'selected' : '' %>>Government Hospital</option>
+            <option value="Private Hospital" <%= listing.type === 'Private Hospital' ? 'selected' : '' %>>Private Hospital</option>
+            <option value="Blood Bank" <%= listing.type === 'Blood Bank' ? 'selected' : '' %>>Blood Bank</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Contact Number</label>
+          <input name="listing[phone]" value="<%= listing.phone %>" type="text" required />
+          <div class="invalid-feedback">Number should be valid!</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Address</label>
+        <textarea name="listing[address]" rows="3" required><%= listing.address %></textarea>
+        <div class="invalid-feedback">Please enter Blood-bank address!</div>
+      </div>
+
+      <div class="input-group">
+        <label>Operating Hours / Timing</label>
+        <input name="listing[timing]" value="<%= listing.timing %>" type="text" required />
+        <div class="invalid-feedback">Please enter blood-bank timing!</div>
+      </div>
+
+      <hr class="form-divider">
+      
+      <label class="stock-label">Update Blood Stock (Units)</label>
+      <div class="blood-stock-grid">
+        <% const types = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %>
+        <% types.forEach(type => { %>
+          <div class="stock-input">
+            <span><%= type %></span>
+            <input 
+              name="listing[available_blood_stock][<%= type %>]" 
+              type="number" 
+              value="<%= listing.available_blood_stock ? listing.available_blood_stock[type] : 0 %>" 
+              min="0" 
+            />
+          </div>
+        <% }) %>
+      </div>
+
+      <button class="btn-submit">Save Changes</button>
+      
+      <div style="text-align: center; margin-top: 15px;">
+        <a href="/listings/<%= listing._id %>" style="color: #666; text-decoration: none; font-size: 0.9rem;">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/script.js"></script>
+<script src="/js/badge.js"></script>

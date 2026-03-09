@@ -1,0 +1,110 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><%= hospital.name %> Dashboard</h2>
+    <small class="text-muted"><%= hospital.address %> | <%= hospital.phone %></small>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3 mb-2">
+      <div class="card text-bg-light">
+        <div class="card-body">
+          <h6 class="card-title">Total Requests</h6>
+          <h3><%= stats.total %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-2">
+      <div class="card text-bg-warning">
+        <div class="card-body">
+          <h6 class="card-title">Pending</h6>
+          <h3><%= stats.pending %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-2">
+      <div class="card text-bg-success">
+        <div class="card-body">
+          <h6 class="card-title">Accepted</h6>
+          <h3><%= stats.accepted %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-2">
+      <div class="card text-bg-secondary">
+        <div class="card-body">
+          <h6 class="card-title">Rejected</h6>
+          <h3><%= stats.rejected %></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Send Urgent Blood Request</h5>
+      <form method="POST" action="/hospital/urgent-request" class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Blood Bank</label>
+          <select class="form-select" name="bloodbankId" required>
+            <option value="" disabled <%= !selectedBankId ? "selected" : "" %>>Select blood bank</option>
+            <% bloodBanks.forEach((bank) => { %>
+              <option value="<%= bank._id %>" <%= selectedBankId && selectedBankId.toString() === bank._id.toString() ? "selected" : "" %>>
+                <%= bank.name %> - <%= bank.address %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Blood Group</label>
+          <select class="form-select" name="bloodGroup" required>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Units</label>
+          <input type="number" min="1" name="units" class="form-control" required />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Urgency Note</label>
+          <input type="text" name="note" class="form-control" placeholder="Optional note" />
+        </div>
+        <div class="col-12">
+          <button class="btn btn-danger" type="submit">Send Urgent Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <h4 class="mb-3">Recent Urgent Requests</h4>
+  <% if (urgentRequests.length === 0) { %>
+    <p>No urgent requests yet.</p>
+  <% } else { %>
+    <% urgentRequests.forEach((item) => { %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="mb-1"><%= item.bloodbank ? item.bloodbank.name : "Unknown Blood Bank" %></h5>
+              <p class="mb-1">Blood Group: <strong><%= item.bloodGroup %></strong></p>
+              <p class="mb-1">Units Needed: <strong><%= item.units %></strong></p>
+              <p class="mb-1">Note: <%= item.note || "N/A" %></p>
+              <p class="mb-0">Created on: <%= item.createdAt.toDateString() %></p>
+            </div>
+            <span class="badge text-bg-<%= item.status === 'Accepted' ? 'success' : (item.status === 'Rejected' ? 'secondary' : 'warning') %>">
+              <%= item.status %>
+            </span>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
