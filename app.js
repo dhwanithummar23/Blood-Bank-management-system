@@ -12,6 +12,25 @@ const { listingSchema } = require("./schema.js");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+
+const isListingVisibleOnIndex = (listing) => {
+  if (!listing) return false;
+
+  const hasBasicDetails =
+    typeof listing.name === "string" &&
+    listing.name.trim() &&
+    typeof listing.address === "string" &&
+    listing.address.trim() &&
+    typeof listing.phone === "string" &&
+    listing.phone.trim() &&
+    typeof listing.timing === "string" &&
+    listing.timing.trim();
+
+  const stock = listing.available_blood_stock || {};
+  const hasStockEntries = Object.keys(stock).length > 0;
+
+  return hasBasicDetails && hasStockEntries;
+};
 const User = require("./models/user");
 const Donation = require("./models/donation");
 const Hospital = require("./models/hospital");
@@ -503,9 +522,11 @@ app.get(
     }
 
     const selectedBankId = req.query.bankId || "";
-    const bloodBanks = await Listing.find({
-      username: { $type: "string", $regex: /\S/ },
-    }).sort({ name: 1 });
+    const bloodBanks = (
+      await Listing.find({
+        username: { $type: "string", $regex: /\S/ },
+      }).sort({ name: 1 })
+    ).filter(isListingVisibleOnIndex);
     const urgentRequests = await UrgentRequest.find({ hospital: hospital._id })
       .populate("bloodbank")
       .sort({ createdAt: -1 });
@@ -533,7 +554,7 @@ app.post(
   wrapAsync(async (req, res) => {
     const { bloodbankId, bloodGroup, units, note } = req.body;
     const bloodbank = await Listing.findById(bloodbankId);
-    if (!bloodbank || !bloodbank.username) {
+    if (!bloodbank || !bloodbank.username || !isListingVisibleOnIndex(bloodbank)) {
       return res.redirect("/hospital/dashboard");
     }
 
@@ -655,22 +676,7 @@ app.get(
           : false;
         return listingObj;
       })
-      .filter((listing) => {
-        const hasBasicDetails =
-          typeof listing.name === "string" &&
-          listing.name.trim() &&
-          typeof listing.address === "string" &&
-          listing.address.trim() &&
-          typeof listing.phone === "string" &&
-          listing.phone.trim() &&
-          typeof listing.timing === "string" &&
-          listing.timing.trim();
-
-        const stock = listing.available_blood_stock || {};
-        const hasStockEntries = Object.keys(stock).length > 0;
-
-        return hasBasicDetails && hasStockEntries;
-      });
+      .filter(isListingVisibleOnIndex);
 
     res.render("listings/index.ejs", {
       allListings: processedListings,
